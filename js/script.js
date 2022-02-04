@@ -6,6 +6,8 @@ const repoList =  document.querySelector(".repo-list");
 const repoClass = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
 
+const backButton = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
 
 
 const getUserInfo = async function(){
@@ -43,6 +45,7 @@ const getRepoInfo = async function(){
 getRepoInfo();
 
 const displayRepos = function (data){
+    filterInput.classList.remove("hide");
     for (let repo of data){
         const repoItem = document.createElement("li");
         repoItem.classList.add("repo");
@@ -87,4 +90,27 @@ const displayRepo = function(repoInfo,languages){
     repoData.append(div);
     repoData.classList.remove("hide");
     repoClass.classList.add("hide");
+    backButton.classList.remove("hide");
 }
+
+backButton.addEventListener("click",function(){
+    repoClass.classList.remove("hide");
+    repoData.classList.add("hide");
+    backButton.classList.add("hide");
+})
+
+filterInput.addEventListener("input",function(e){
+    const capture = e.target.value;
+    const repos = document.querySelectorAll(".repo");
+    const lowerCapture = capture.toLowerCase();
+    for(const index of repos){
+        const repoLowerText = index.innerText.toLowerCase();
+        if (repoLowerText.includes(lowerCapture)){
+            index.classList.remove("hide");
+        }
+        else
+        {
+            index.classList.add("hide");
+        }
+    }
+});
