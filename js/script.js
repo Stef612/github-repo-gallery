@@ -1,7 +1,7 @@
 const overview = document.querySelector(".overview");
 const username = "Stef612";
 
-const repoList =  document.querySelector(".repo-list");
+const repoList = document.querySelector(".repo-list");
 
 const repoClass = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
@@ -10,7 +10,7 @@ const backButton = document.querySelector(".view-repos");
 const filterInput = document.querySelector(".filter-repos");
 
 
-const getUserInfo = async function(){
+const getUserInfo = async function() {
     const profile = await fetch(`https://api.github.com/users/${username}`);
     const data = await profile.json();
     console.log(data);
@@ -19,10 +19,10 @@ const getUserInfo = async function(){
 
 getUserInfo();
 
-const displayUser = function(data)
-{
+const displayUser = function(data) {
     const div = document.createElement("div");
-    div.innerHTML=`
+    div.classList.add("user-info")
+    div.innerHTML = `
     <figure>
       <img alt="user avatar" src=${data.avatar_url} />
     </figure>
@@ -33,9 +33,10 @@ const displayUser = function(data)
       <p><strong>Number of public repos:</strong> ${data.public_repos}</p>
     </div>`;
     overview.append(div);
+    gitRepos(username);
 };
 
-const getRepoInfo = async function(){
+const getRepoInfo = async function() {
     const repos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
     const data = await repos.json();
     console.log(data);
@@ -44,25 +45,25 @@ const getRepoInfo = async function(){
 
 getRepoInfo();
 
-const displayRepos = function (data){
+const displayRepos = function(data) {
     filterInput.classList.remove("hide");
-    for (let repo of data){
+    for (let repo of data) {
         const repoItem = document.createElement("li");
         repoItem.classList.add("repo");
         repoItem.innerHTML = `<h3>${repo.name}</h3>`;
         repoList.append(repoItem);
-    } 
+    }
 };
 
-repoList.addEventListener("click",function(e){
-    if (e.target.matches("h3")){
+repoList.addEventListener("click", function(e) {
+    if (e.target.matches("h3")) {
         let repoName = e.target.innerHTML;
         //console.log(repoName);
         getRepo(repoName);
     }
 })
 
-const getRepo = async function(repoName){
+const getRepo = async function(repoName) {
     const repo = await fetch(`https://api.github.com/repos/${username}/${repoName}`);
     const repoInfo = await repo.json();
     console.log(repoInfo);
@@ -71,17 +72,17 @@ const getRepo = async function(repoName){
     console.log(languageData);
 
     const languages = [];
-    for (let key in languageData){
+    for (let key in languageData) {
         languages.push(key);
     }
     console.log(languages);
-    displayRepo(repoInfo,languages);
+    displayRepo(repoInfo, languages);
 };
 
-const displayRepo = function(repoInfo,languages){
-    repoData.innerHTML="";
+const displayRepo = function(repoInfo, languages) {
+    repoData.innerHTML = "";
     const div = document.createElement("div");
-    div.innerHTML=`
+    div.innerHTML = `
     <h3>Name: ${repoInfo.name}</h3>
     <p>Description: ${repoInfo.description}</p>
     <p>Default Branch: ${repoInfo.default_branch}</p>
@@ -93,23 +94,21 @@ const displayRepo = function(repoInfo,languages){
     backButton.classList.remove("hide");
 }
 
-backButton.addEventListener("click",function(){
+backButton.addEventListener("click", function() {
     repoClass.classList.remove("hide");
     repoData.classList.add("hide");
     backButton.classList.add("hide");
 })
 
-filterInput.addEventListener("input",function(e){
+filterInput.addEventListener("input", function(e) {
     const capture = e.target.value;
     const repos = document.querySelectorAll(".repo");
     const lowerCapture = capture.toLowerCase();
-    for(const index of repos){
+    for (const index of repos) {
         const repoLowerText = index.innerText.toLowerCase();
-        if (repoLowerText.includes(lowerCapture)){
+        if (repoLowerText.includes(lowerCapture)) {
             index.classList.remove("hide");
-        }
-        else
-        {
+        } else {
             index.classList.add("hide");
         }
     }
